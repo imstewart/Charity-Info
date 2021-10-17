@@ -40,6 +40,6 @@ Files that required to be updated to make this work
  
  1. Rachel: This are files that are corrected HTML files that sort out issues with missing links, basically links to incorrect files
          
- 2. 
+ 2. windows Update.ps1 : Standaloen PS1 that does a Windows update using a third party Module
           
  
