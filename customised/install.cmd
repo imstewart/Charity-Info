@@ -1,2 +1,0 @@
-rem PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Unrestricted -File ""\\192.168.0.115\samba\turing apps\settings\turing_settings.ps1""' -Verb RunAs}";
-PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Unrestricted -File "".\turing_settings.ps1""' -Verb RunAs}";

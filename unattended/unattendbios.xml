@@ -65,7 +65,7 @@
                     <WillShowUI>Never</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
-                <FullName>Turing Trust</FullName>
+                <FullName>Turing Trust User</FullName>
                 <Organization>Turing Trust</Organization>
             </UserData>
         </component>
@@ -86,7 +86,7 @@
             <SystemLocale>en-GB</SystemLocale>
             <UILanguage>en-GB</UILanguage>
             <UILanguageFallback>en-GB</UILanguageFallback>
-            <UserLocale>en-GB</UserLocale>
+            <UserLocale>en-GB</UserLocale>  
         </component>
         <component name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <SkipAutoActivation>true</SkipAutoActivation>
@@ -99,6 +99,45 @@
             <ProductKey>W269N-WFGWX-YVC9B-4J6C9-T83GX</ProductKey>
             <CopyProfile>true</CopyProfile>
         </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunAsynchronous>
+			    <RunAsynchronousCommand wcm:action="add">
+                    <Description>Driver Location</Description>
+                    <Order>1</Order>
+                    <Path>cmd /c reg add HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion /v DevicePath /t REG_EXPAND_SZ /d "%SystemRoot%\inf;\\192.168.0.220\deploy\drivers" /f</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Folder</Description>
+                    <Order>2</Order>
+                    <Path>cmd.exe /c md "c:\turing"</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Edge first run</Description>
+                    <Order>3</Order>
+                    <Path>cmd /c reg add HKLM\software\policies\microsoft\Edge /v HideFirstRunExperience /t REG_DWORD /d 1 /f</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Edge Setting</Description>
+                    <Order>4</Order>
+                    <Path>cmd /c reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\EdgeUpdate /v UpdateDefault /t REG_DWORD /d 3 /f</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Edge Settings</Description>
+                    <Order>5</Order>
+                    <Path>cmd /c reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\EdgeUpdate /v InstallDefault /t REG_DWORD /d 1 /f</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Edge Settings</Description>
+                    <Order>6</Order>
+                    <Path>cmd /c reg add HKLM\software\microsoft\windows\currentversion\policies\system /v EnableFirstLogonAnimation /t REG_DWORD /d 0 /f</Path>
+                </RunAsynchronousCommand>
+                <RunAsynchronousCommand wcm:action="add">
+                    <Description>Network Discovery</Description>
+                    <Order>7</Order>
+                    <Path>cmd /c HKLM\software\microsoft\windows\currentversion\CONTROL\NETWORK\NewNetworkWindowsOff /F</Path>
+                </RunAsynchronousCommand>
+            </RunAsynchronous>
+        </component>
     </settings>
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -109,10 +148,14 @@
                 </AdministratorPassword>
                 <LocalAccounts>
                     <LocalAccount wcm:action="add">
-                        <Description>User1</Description>
-                        <DisplayName>User1</DisplayName>
-                        <Group>Administrators</Group>
-                        <Name>User1</Name>
+                        <Password>
+                            <Value>dQBzAGUAcgAxAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                            <PlainText>false</PlainText>
+                        </Password>
+                        <Description>user1</Description>
+                        <DisplayName>user1</DisplayName>
+                        <Group>administrators</Group>
+                        <Name>user1</Name>
                     </LocalAccount>
                 </LocalAccounts>
             </UserAccounts>
@@ -140,13 +183,38 @@
                     <RequiresUserInput>false</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>reg ADD HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer /V EnableAutoTray /T REG_DWORD /D 1 /F</CommandLine>
-                    <Description>Display all icons</Description>
+                    <CommandLine>reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation /v SupportURL /t REG_SZ /d https://www.turingtrust.co.uk /f</CommandLine>
+                    <Description>OEM URL</Description>
                     <Order>2</Order>
                     <RequiresUserInput>false</RequiresUserInput>
                 </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation /v Manufacturer /t REG_SZ /d "Turing Trust" /f</CommandLine>
+                    <Description>OEM Name</Description>
+                    <Order>3</Order>
+                    <RequiresUserInput>false</RequiresUserInput>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd /c net user user1 ""</CommandLine>
+                    <Description>Reset Password to blank</Description>
+                    <Order>4</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c \\192.168.0.220\deploy\install.cmd</CommandLine>
+                    <Description>Final Settings</Description>
+                    <Order>5</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
+                </SynchronousCommand>
             </FirstLogonCommands>
-            <ShowWindowsLive>false</ShowWindowsLive>
+            <AutoLogon>
+                <Password>
+                    <Value>dQBzAGUAcgAxAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                    <PlainText>false</PlainText>
+                </Password>
+                <Enabled>true</Enabled>
+                <Username>user1</Username>
+            </AutoLogon>
         </component>
         <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <InputLocale>0809:00000809</InputLocale>
@@ -154,6 +222,24 @@
             <UILanguage>en-GB</UILanguage>
             <UILanguageFallback>en-GB</UILanguageFallback>
             <UserLocale>en-GB</UserLocale>
+        </component>
+    </settings>
+    <settings pass="auditSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <UserAccounts>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>dQBzAGUAcgAxAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                            <PlainText>false</PlainText>
+                        </Password>
+                        <Description>user1</Description>
+                        <DisplayName>user1</DisplayName>
+                        <Group>administrators</Group>
+                        <Name>user1</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
         </component>
     </settings>
     <cpi:offlineImage cpi:source="wim://wds/reminst/install.wim#Windows 10 Pro" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
