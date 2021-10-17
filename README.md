@@ -36,7 +36,10 @@ Files that required to be updated to make this work
           
           $file_location = "\\192.168.0.220\deploy\turing"
           
-          
-          
+ # Other files/folder
+ 
+ 1. Rachel: This are files that are corrected HTML files that sort out issues with missing links, basically links to incorrect files
+         
+ 2. 
           
  
