@@ -506,12 +506,6 @@ function Turing-Cleanup  {
 	echo "" > C:\\ProgramData\\Microsoft\\Diagnosis\\ETLLogs\\AutoLogger\\AutoLogger-Diagtrack-Listener.etl
 	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f > null
 
-    md c:\turing -Force | Out-Null
-    Copy-Item $file_location\icons\*.* 'C:\ProgramData\Microsoft\User Account Pictures' -Force
-    Copy-Item $file_location\bginfo\*.exe C:\Windows\System32 -Force
-    Copy-Item $file_location\bginfo\desktop.bgi C:\turing\desktop.bgi -Force
-    Copy-Item $file_location\background.lnk 'C:\Users\All Users\Microsoft\Windows\Start Menu\Programs\StartUp' -Force
-
 	sleep -Seconds 3
 	taskkill /f /IM explorer.exe > null
 	start explorer
@@ -519,6 +513,17 @@ function Turing-Cleanup  {
 }
 
 
+function Branding
+{
+ 
+
+    md c:\turing -Force | Out-Null
+    Copy-Item $file_location\icons\*.* 'C:\ProgramData\Microsoft\User Account Pictures' -Force
+    Copy-Item $file_location\bginfo\*.exe C:\Windows\System32 -Force
+    Copy-Item $file_location\bginfo\desktop.bgi C:\turing\desktop.bgi -Force
+    Copy-Item $file_location\background.lnk 'C:\Users\All Users\Microsoft\Windows\Start Menu\Programs\StartUp' -Force
+
+}
 
 Function Show-MessageBox ($msg)
 {
@@ -590,6 +595,8 @@ If ($AppsOnly) {
 	Write-Host "Apply patches" -ForegroundColor Yellow
         mspatch
     Write-Host "Turing Message: " -ForegroundColor Cyan -NoNewline
+    Write-Host "Branding"  -ForegroundColor Yellow
+        Branding
     Write-Host "Unpin Apps"  -ForegroundColor Yellow
 	    Unpin-App("Microsoft Edge") 
         Unpin-App("Microsoft Store")
