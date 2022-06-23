@@ -96,12 +96,12 @@ foreach ($drive in $drives.DeviceID)
 
 
 # Convert Data to JSON
+    $jsonfile  = "c:\temp\post_data.json" 
     Write-host "Exporting computer Info to JSON" -ForegroundColor Yellow
-    $turingdata | convertto-json | Out-File -FilePath c:\temp\post_data.json
-
+    $turingdata | convertto-json | Out-File -FilePath $jsonfile
 # Post data to Web Server
     Write-host "Posting computer Info to Server" -ForegroundColor Yellow
-    #Invoke-WebRequest -Uri  http://192.168.0.1:8000/ws/blancco.html -Method POST  -Body { c:\temp\post_data.json }
+    Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html -ContentType application/json -Method POST  -Body { $jsonfile }
 
 # Test default Applications
     Write-host "Testing Turing Trust Apps" -ForegroundColor Yellow
