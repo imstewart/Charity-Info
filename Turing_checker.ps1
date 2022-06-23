@@ -63,15 +63,15 @@ foreach ($drive in $drives.DeviceID)
 # Ask if Device is for Sales
     if ( $RACHEL -EQ "Yes" ) 
         {
-            $forSale = Read-Host "ForSale? [Y/n] "
-                If (!$forSale) { $forSale = 'Yes'}
-                if ( $forSale.ToUpper() = "y") {$forSale = 'Yes'}
+            $forSale = Read-Host "ForSale? y/[N] "
+                If (!$forSale) { $forSale = 'No'}
+                if ( $forSale.ToUpper() = "N") {$forSale = 'No'}
         }
     else 
         {
-            $forSale = Read-Host "ForSale? [y/N] "
-                If (!$forSale) {$forSale = 'No'}
-                if ( $forSale.ToUpper() = "N") {$forSale = 'No'}
+            $forSale = Read-Host "ForSale? [Y]/n "
+                If (!$forSale) {$forSale = 'Yes'}
+                if ( $forSale.ToUpper() = "Y") {$forSale = 'Yes'}
         }
 
 
