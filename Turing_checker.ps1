@@ -21,7 +21,7 @@ function Is-Numeric ($Value)
  
 
 # Collect Computer Infomration
-    Write-host "Getting Computer Info" -ForegroundColor Yellow
+    Write-host "Collecting Computer Info" -ForegroundColor Yellow
     $computerinfo = Get-ComputerInfo
 
 # Get Activation Status
@@ -30,24 +30,39 @@ function Is-Numeric ($Value)
     else 
     { Write-host "    Status: Windows Licence Not Activated" -ForegroundColor Red 
       slui.exe 3
+      pause
     }
 
+
+
 # Install Windows Updates
-    Write-host "Installing any missing device drivers" -ForegroundColor Yellow
+    Write-host "Checking forg any missing device drivers" -ForegroundColor Yellow
     $res = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     $res = Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
-    Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot
-
+    #Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | select Result,size,title
+    $driver_count = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver
+        write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
+    write-host $Missing_devices.name -ForegroundColor Yellow
+    Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
+     Write-host "Installing any missing device drivers" -ForegroundColor Yellow
 # Start Checkcollecting Desktop Data
     Write-host "Checking Computer Status" -ForegroundColor Yellow
 
 # Check in Device drivers are missing
     $Missing_devices = Get-WmiObject Win32_PNPEntity | Where-Object{$_.ConfigManagerErrorCode -ne 0} | Select Name, DeviceID
-    if ($Missing_devices.count -eq 0) { Write-host "    Status: All Device drivers installed" -ForegroundColor Green} else { Write-host "    Status: After initial windows update there are still $Missing_devices.count missing" -ForegroundColor Red }
+    
+    write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
+    write-host $Missing_devices.name -ForegroundColor Yellow
+
+    if ($Missing_devices.count -eq 0) { Write-host "    Status: All Device drivers installed" -ForegroundColor Green} else { Write-host " Status: After initial windows update there are still missing, may require a reboot to clear" -ForegroundColor Red 
+    pause }
+
+# Start Collecting Desktop Data
+    Write-host "Checking Computer Status" -ForegroundColor Yellow
+
+    $drives = Get-WMIObject Win32_LogicalDisk | Select DeviceID
 
 # Test if Rachel is installed on any Drive
-
-$drives = Get-WMIObject Win32_LogicalDisk | Select DeviceID
 
 foreach ($drive in $drives.DeviceID)
 {
@@ -99,6 +114,7 @@ foreach ($drive in $drives.DeviceID)
     $jsonfile  = "c:\temp\post_data.json" 
     Write-host "Exporting computer Info to JSON" -ForegroundColor Yellow
     $turingdata | convertto-json | Out-File -FilePath $jsonfile
+    
 # Post data to Web Server
     Write-host "Posting computer Info to Server" -ForegroundColor Yellow
     Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html -ContentType application/json -Method POST  -Body { $jsonfile }
