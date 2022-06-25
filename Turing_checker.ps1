@@ -8,21 +8,48 @@ function Is-Numeric ($Value)
 {
     return $Value -match "^[\d\.]+$"
 }
+ 
 
-# Get Assset Number
+# Collect Computer Infomration
+    Write-host "Collecting Computer Info" -ForegroundColor Yellow
+    $computerinfo = Get-ComputerInfo
+
+# Check in the device has an Asset Number
+    $webrequest =  "http://pi.ianstewart.net/"+$computerinfo.BiosSeralNumber+".ser"
+
+    try
+    {
+        $Response = Invoke-WebRequest -Uri $webrequest -UseBasicParsing
+
+        # This will only execute if the Invoke-WebRequest is successful.
+        $StatusCode = $Response.StatusCode
+
+        $webclient = new-object System.Net.WebClient
+        
+        $webpage = $webclient.DownloadString($webrequest)
+    }
+catch
+{
+    $StatusCode = $_.Exception.Response.StatusCode.value__
+
+
+}
+
+    # Get Assset Number
     do {
-        $assetid = [string](Read-Host -Prompt 'Enter Asset ID: [8 Digits]')
+         $defaultValue = $webpage.TrimEnd()
+    
+        if (($assetid = Read-Host "Press Turing asset ID:") -eq '') {$defaultValue} else {$assetid}
+
         if ((Is-Numeric ($assetid) -ne $true) -and $assetid.Length -le 7 -or $assetid.Length -ge 9  ) {
              continue
         }
          break
     } while ($true)
 
+
  
 
-# Collect Computer Infomration
-    Write-host "Collecting Computer Info" -ForegroundColor Yellow
-    $computerinfo = Get-ComputerInfo
 
 # Get Activation Status
     $Activation_status = Get-CIMInstance -query "select Name, Description, LicenseStatus from SoftwareLicensingProduct where LicenseStatus=1" | select LicenseStatus
@@ -34,31 +61,51 @@ function Is-Numeric ($Value)
     }
 
 
-
-# Install Windows Updates
-    Write-host "Checking forg any missing device drivers" -ForegroundColor Yellow
-    $res = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    $res = Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
-    #Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -AcceptAll -IgnoreReboot | select Result,size,title
-    $driver_count = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver
-        write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
-    write-host $Missing_devices.name -ForegroundColor Yellow
-    Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
-     Write-host "Installing any missing device drivers" -ForegroundColor Yellow
-# Start Checkcollecting Desktop Data
-    Write-host "Checking Computer Status" -ForegroundColor Yellow
-
 # Check in Device drivers are missing
     $Missing_devices = Get-WmiObject Win32_PNPEntity | Where-Object{$_.ConfigManagerErrorCode -ne 0} | Select Name, DeviceID
     
-    write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
-    write-host $Missing_devices.name -ForegroundColor Yellow
+    if ($Missing_devices.count -eq 0) { Write-host "    Status: All Device drivers installed" -ForegroundColor Green} 
+    
+    else {
 
-    if ($Missing_devices.count -eq 0) { Write-host "    Status: All Device drivers installed" -ForegroundColor Green} else { Write-host " Status: After initial windows update there are still missing, may require a reboot to clear" -ForegroundColor Red 
-    pause }
+            write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
+            write-host $Missing_devices.name -ForegroundColor Yellow
 
-# Start Collecting Desktop Data
-    Write-host "Checking Computer Status" -ForegroundColor Yellow
+
+# Install Windows Updates
+    
+            Write-host "Checking for any missing device drivers" -ForegroundColor Yellow
+            $res = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+            $res = Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
+    
+            $driver_count = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver
+        
+            write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
+            write-host $Missing_devices.name -ForegroundColor Yellow
+    
+        Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
+        
+        Write-host "Installing missing device drivers" -ForegroundColor Yellow
+
+        }
+
+
+# Check in Device drivers again
+
+    $Missing_devices = Get-WmiObject Win32_PNPEntity | Where-Object{$_.ConfigManagerErrorCode -ne 0} | Select Name, DeviceID
+    
+    if ($Missing_devices.count -ne 0) 
+
+        {
+        
+            Write-host " Status: After initial windows update there are still missing, may require a reboot to clear" -ForegroundColor Red 
+            pause 
+        }
+
+
+# Collecting Disk Data
+
+    Write-host "Collecting Disk Data ..." -ForegroundColor Yellow
 
     $drives = Get-WMIObject Win32_LogicalDisk | Select DeviceID
 
@@ -68,25 +115,36 @@ foreach ($drive in $drives.DeviceID)
 {
     if ($RACHEL -ne "Yes") { 
         $testdrive = $drive.tostring() + "\Rachel"
+
         if ( Test-Path ($testdrive)) { $RACHEL ="Yes"} else  { $RACHEL ="No" }
             Write-host "Rachel Installed : " -NoNewline
             Write-host " $RACHEL" -ForegroundColor Yellow
+
     }
    
 }
 
 # Ask if Device is for Sales
+
     if ( $RACHEL -EQ "Yes" ) 
+
         {
+
             $forSale = Read-Host "ForSale? y/[N] "
+
                 If (!$forSale) { $forSale = 'No'}
                 if ( $forSale.ToUpper() = "N") {$forSale = 'No'}
+
         }
+
     else 
+
         {
+
             $forSale = Read-Host "ForSale? [Y]/n "
                 If (!$forSale) {$forSale = 'Yes'}
                 if ( $forSale.ToUpper() = "Y") {$forSale = 'Yes'}
+
         }
 
 
