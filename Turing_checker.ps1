@@ -175,7 +175,9 @@ foreach ($drive in $drives.DeviceID)
     
 # Post data to Web Server
     Write-host "Posting computer Info to Server" -ForegroundColor Yellow
-    Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html -ContentType application/json -Method POST  -Body { $jsonfile }
+    Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html  -Method 'Post' -Body $jsonfile
+
+
 
 # Test default Applications
     Write-host "Testing Turing Trust Apps" -ForegroundColor Yellow
@@ -187,7 +189,9 @@ foreach ($drive in $drives.DeviceID)
     Start-Process -wait "C:\Users\user1\AppData\Local\Programs\Scratch 3\Scratch 3.exe"
     Write-host "4. Rachel video and sound"
     Start-Process -wait "chrome.exe" "file:///C:/RACHEL/RACHEL/modules/khan_academy/math/arithmetic/addition-subtraction/basic_addition/basic-addition.html"
-    Write-host "5. Check Security Dashboard is copascetic"
+    Write-host "6. View PDF Document"
+    Invoke-Item "C:\Users\Public\Documents\Computer studies syllabus and past papers\Malawi-msce-computer-studies-syllabus-2001_Forms 1and2.pdf" 
+    Write-host "7. Check Security Dashboard is copascetic"
     Start-Process WindowsDefender:
 
 # End of Checks
