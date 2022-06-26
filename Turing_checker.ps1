@@ -3,6 +3,7 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
 $ProgressPreference = "SilentlyContinue"
 $status ="Imaged"
 $RACHEL ="No"
+clear
 
 function Is-Numeric ($Value)
 {
@@ -11,6 +12,7 @@ function Is-Numeric ($Value)
  
 
 # Collect Computer Infomration
+    Write-Host  "Info  : " -NoNewline -ForegroundColor Green
     Write-host "Collecting Computer Info" -ForegroundColor Yellow
     $computerinfo = Get-ComputerInfo
 
@@ -38,8 +40,10 @@ catch
     # Get Assset Number
     do {
          $defaultValue = $webpage.TrimEnd()
+
+         Write-Host  "Info  : " -NoNewline -ForegroundColor Green
     
-        if (($assetid = Read-Host "Press Turing asset ID:") -eq '') {$defaultValue} else {$assetid}
+        if (($assetid = Read-Host "Enter Turing asset ID: [$($defaultValue)]") -eq '') {$assetid  = $defaultValue} 
 
         if ((Is-Numeric ($assetid) -ne $true) -and $assetid.Length -le 7 -or $assetid.Length -ge 9  ) {
              continue
@@ -53,39 +57,51 @@ catch
 
 # Get Activation Status
     $Activation_status = Get-CIMInstance -query "select Name, Description, LicenseStatus from SoftwareLicensingProduct where LicenseStatus=1" | select LicenseStatus
-    if ($Activation_status.LicenseStatus -eq 1) { Write-host "    Status: Windows Licence Activated" -ForegroundColor Green } 
-    else 
-    { Write-host "    Status: Windows Licence Not Activated" -ForegroundColor Red 
-      slui.exe 3
-      pause
-    }
+    if ($Activation_status.LicenseStatus -eq 1) 
+        { 
+            Write-Host  "Info  : " -NoNewline -ForegroundColor Green
+            Write-host "Status: Windows Licence Activated" } 
+        else 
+        
+        { 
+            Write-Host  "Error : " -NoNewline -ForegroundColor red
+            Write-host " Status: Windows Licence Not Activated" 
+            slui.exe 3
+            pause
+        }
 
 
 # Check in Device drivers are missing
     $Missing_devices = Get-WmiObject Win32_PNPEntity | Where-Object{$_.ConfigManagerErrorCode -ne 0} | Select Name, DeviceID
     
-    if ($Missing_devices.count -eq 0) { Write-host "    Status: All Device drivers installed" -ForegroundColor Green} 
+    if ($Missing_devices.count -eq 0) { 
+        Write-Host  "Info  : " -NoNewline -ForegroundColor Green
+        Write-host "Status: All Device drivers installed" } 
     
     else {
 
-            write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
-            write-host $Missing_devices.name -ForegroundColor Yellow
+            Write-Host  "Error  : " -NoNewline -ForegroundColor Red
+            write-host "Number of device drivers missing: " -NoNewline
+            write-host $Missing_devices.name -ForegroundColor red
 
 
 # Install Windows Updates
     
-            Write-host "Checking for any missing device drivers" -ForegroundColor Yellow
+            Write-Host  "Info  : " -NoNewline -ForegroundColor Green
+            Write-host "Checking for any missing device drivers" 
             $res = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
             $res = Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
     
             $driver_count = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver
         
-            write-host " Number of device drivers missing: " -NoNewline -ForegroundColor Green
-            write-host $Missing_devices.name -ForegroundColor Yellow
+            Write-Host "Error  : " -NoNewline -ForegroundColor Red          
+            write-host "Number of device drivers missing: " -NoNewline -ForegroundColor Green
+            write-host $Missing_devices.name -ForegroundColor red
     
         Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
         
-        Write-host "Installing missing device drivers" -ForegroundColor Yellow
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green
+            Write-host "Installing missing device drivers" -ForegroundColor Yellow
 
         }
 
@@ -98,14 +114,16 @@ catch
 
         {
         
-            Write-host " Status: After initial windows update there are still missing, may require a reboot to clear" -ForegroundColor Red 
+            Write-Host "Warning : " -NoNewline -ForegroundColor Red
+            Write-host "After initial windows update there are still missing, may require a reboot to clear" 
             pause 
         }
 
 
 # Collecting Disk Data
 
-    Write-host "Collecting Disk Data ..." -ForegroundColor Yellow
+    Write-Host "Info  : " -NoNewline -ForegroundColor Green
+    Write-host "Collecting Disk Data ..."
 
     $drives = Get-WMIObject Win32_LogicalDisk | Select DeviceID
 
@@ -117,8 +135,9 @@ foreach ($drive in $drives.DeviceID)
         $testdrive = $drive.tostring() + "\Rachel"
 
         if ( Test-Path ($testdrive)) { $RACHEL ="Yes"} else  { $RACHEL ="No" }
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green
             Write-host "Rachel Installed : " -NoNewline
-            Write-host " $RACHEL" -ForegroundColor Yellow
+            Write-host "$RACHEL" -ForegroundColor Yellow
 
     }
    
@@ -129,7 +148,7 @@ foreach ($drive in $drives.DeviceID)
     if ( $RACHEL -EQ "Yes" ) 
 
         {
-
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green
             $forSale = Read-Host "ForSale? y/[N] "
 
                 If (!$forSale) { $forSale = 'No'}
@@ -170,32 +189,56 @@ foreach ($drive in $drives.DeviceID)
 
 # Convert Data to JSON
     $jsonfile  = "c:\temp\post_data.json" 
-    Write-host "Exporting computer Info to JSON" -ForegroundColor Yellow
+    Write-Host "Info  : " -NoNewline -ForegroundColor Green
+    Write-host "Exporting computer Info to JSON" 
     $turingdata | convertto-json | Out-File -FilePath $jsonfile
     
 # Post data to Web Server
-    Write-host "Posting computer Info to Server" -ForegroundColor Yellow
-    Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html  -Method 'Post' -Body $jsonfile
+    Write-Host "Info  : " -NoNewline -ForegroundColor Green
+    Write-host "Posting computer Info to Server" 
+    try
+    {
+        $request = Invoke-WebRequest -Uri http://192.168.0.1:8000/ws/blancco.html  -Method 'Post' -Body $jsonfile -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+        Write-Host "Info  : " -NoNewline -ForegroundColor Green
+        write-host "Data was sent to Server."
+    }
+    catch 
+    {
+        Write-Host "Error :" -NoNewline -BackgroundColor red
+        write-host " Data NOT sent to Server." -ForegroundColor Red
+    }
+
+    
+
 
 
 
 # Test default Applications
+    Write-Host  "Info  : " -NoNewline -ForegroundColor Green
     Write-host "Testing Turing Trust Apps" -ForegroundColor Yellow
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "1. LibreOffice"
     Start-Process -Wait "C:\Program Files\LibreOffice\program\soffice.exe"
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "2. Rapid Typing"
     Start-Process -Wait "C:\RapidTyping\RapidTyping.exe"
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "3. Scratch"
     Start-Process -wait "C:\Users\user1\AppData\Local\Programs\Scratch 3\Scratch 3.exe"
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "4. Rachel video and sound"
     Start-Process -wait "chrome.exe" "file:///C:/RACHEL/RACHEL/modules/khan_academy/math/arithmetic/addition-subtraction/basic_addition/basic-addition.html"
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "6. View PDF Document"
-    Invoke-Item "C:\Users\Public\Documents\Computer studies syllabus and past papers\Malawi-msce-computer-studies-syllabus-2001_Forms 1and2.pdf" 
+    Start-Process -wait "chrome.exe" "file:///C:/Users/Public/Documents/Computer%20studies%20syllabus%20and%20past%20papers/Malawi-msce-computer-studies-syllabus-2001_Forms%201and2.pdf"
+     
+    Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "7. Check Security Dashboard is copascetic"
     Start-Process WindowsDefender:
 
 # End of Checks
-read-host "All checks completed - Press to close.." 
+write-host "All checks completed - Press to close.." -ForegroundColor Cyan
+read-host
 
 # List Export JSOn File : For testing only
 #gc("c:\temp\post_data.json")
