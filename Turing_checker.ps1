@@ -34,7 +34,6 @@ catch
 {
     $StatusCode = $_.Exception.Response.StatusCode.value__
 
-
 }
 
     # Get Assset Number
@@ -45,14 +44,11 @@ catch
     
         if (($assetid = Read-Host "Enter Turing asset ID: [$($defaultValue)]") -eq '') {$assetid  = $defaultValue} 
 
-        if ((Is-Numeric ($assetid) -ne $true) -and $assetid.Length -le 7 -or $assetid.Length -ge 9  ) {
+        if ((Is-Numeric ($assetid) -ne $true) -and $assetid.Length -ne 8  ) {
              continue
         }
          break
     } while ($true)
-
-
- 
 
 
 # Get Activation Status
@@ -60,12 +56,12 @@ catch
     if ($Activation_status.LicenseStatus -eq 1) 
         { 
             Write-Host  "Info  : " -NoNewline -ForegroundColor Green
-            Write-host "Status: Windows Licence Activated" } 
+            Write-host "Microsoft Windows Licence has been Activated" -ForegroundColor Cyan } 
         else 
         
         { 
             Write-Host  "Error : " -NoNewline -ForegroundColor red
-            Write-host " Status: Windows Licence Not Activated" 
+            Write-host "Microsoft Windows Licence has Not Activated" 
             slui.exe 3
             pause
         }
@@ -80,28 +76,30 @@ catch
     
     else {
 
-            Write-Host  "Error  : " -NoNewline -ForegroundColor Red
-            write-host "Number of device drivers missing: " -NoNewline
-            write-host $Missing_devices.name -ForegroundColor red
-
-
 # Install Windows Updates
     
-            Write-Host  "Info  : " -NoNewline -ForegroundColor Green
-            Write-host "Checking for any missing device drivers" 
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green
+            Write-host "Checking for any missing device drivers - Please wait..."
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green 
+            Write-Host "--------------------------------------------------------"
+
             $res = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
             $res = Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
     
             $driver_count = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver
-        
-            Write-Host "Error  : " -NoNewline -ForegroundColor Red          
-            write-host "Number of device drivers missing: " -NoNewline -ForegroundColor Green
-            write-host $Missing_devices.name -ForegroundColor red
-    
-        Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
-        
+
             Write-Host "Info  : " -NoNewline -ForegroundColor Green
-            Write-host "Installing missing device drivers" -ForegroundColor Yellow
+            Write-host "List of all device drivers being updated"
+            $driver_count.title | sort -Unique
+        
+            Write-Host "Error : " -NoNewline -ForegroundColor Red          
+            write-host "Number of device drivers missing: " -NoNewline -ForegroundColor Green
+            write-host $Missing_devices.count -ForegroundColor red
+
+            Write-Host "Info  : " -NoNewline -ForegroundColor Green
+            Write-host "Installing missing device drivers and updating any other drivers available - This can take 5 mins." -ForegroundColor Yellow
+    
+           $drivers = Get-WindowsUpdate -WindowsUpdate -UpdateType Driver -Install -AcceptAll -IgnoreReboot | select Result,size,title
 
         }
 
@@ -114,11 +112,12 @@ catch
 
         {
         
-            Write-Host "Warning : " -NoNewline -ForegroundColor Red
+            Write-Host "Error : " -NoNewline -ForegroundColor Red
             Write-host "After initial windows update there are still missing, may require a reboot to clear" 
-            pause 
+            devmgmt.msc
         }
 
+pause 
 
 # Collecting Disk Data
 
@@ -208,10 +207,6 @@ foreach ($drive in $drives.DeviceID)
         write-host " Data NOT sent to Server." -ForegroundColor Red
     }
 
-    
-
-
-
 
 # Test default Applications
     Write-Host  "Info  : " -NoNewline -ForegroundColor Green
@@ -231,14 +226,20 @@ foreach ($drive in $drives.DeviceID)
     Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "6. View PDF Document"
     Start-Process -wait "chrome.exe" "file:///C:/Users/Public/Documents/Computer%20studies%20syllabus%20and%20past%20papers/Malawi-msce-computer-studies-syllabus-2001_Forms%201and2.pdf"
-     
     Write-Host  "Check : " -NoNewline -ForegroundColor Green
     Write-host "7. Check Security Dashboard is copascetic"
     Start-Process WindowsDefender:
 
+# Cleanup Shortcut File
+    remove-item -Path "C:\Users\user1\Desktop\Turing Checker Script.lnk" -Force
+
 # End of Checks
-write-host "All checks completed - Press to close.." -ForegroundColor Cyan
-read-host
+    Write-Host  "Info  : " -NoNewline -ForegroundColor Green
+    Write-host "Please stick a purple dot to the device" -ForegroundColor Yellow
+
+    Write-Host
+    write-host "All checks completed - Press to close.." -ForegroundColor Cyan
+    read-host
 
 # List Export JSOn File : For testing only
 #gc("c:\temp\post_data.json")
