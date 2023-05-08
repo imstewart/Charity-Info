@@ -26,13 +26,14 @@
   async function uploadFile() {
   let formData = new FormData(); 
   formData.append("file", fileupload.files[0]);
-  await fetch('/photo/uploader.php', {
+  await fetch('/photo/scripts/uploader.php', {
     method: "POST", 
     body: formData
   }); 
   alert('The file has been uploaded successfully.');
   }
   </script>
+
 </head>
 <body>
 
@@ -97,41 +98,32 @@
 
 
 <div class="container mx-auto p-4 bg-white shadow rounded ">
-<form>
+<form action="uploader.php" method="post">
     <div class="grid gap-6 mb-6 md:grid-cols-2">
         <div>
             <label for="Width" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Width</label>
-            <input type="number" id="Width" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="500" required>
+            <input type="number" name="Width" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value ="500" required>
         </div>
         <div>
             <label for="Height" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Height</label>
-            <input type="number" id="Height" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="300" required>
+            <input type="number" name="Height" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="300" required>
         </div>
         <div>
             <label for="X" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">X Position</label>
-            <input type="number" id="X" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="2000" required>
+            <input type="number" name="X" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value ="2000" required>
         </div>  
         <div>
             <label for="Y" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Y Postion</label>
-            <input type="number" id="Y" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="1300"  required>
+            <input type="number" name="Y" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value ="1300"  required>
         </div>
    
     </div>
   
-    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="fileupload" type="file" name="fileupload"  >
+    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"  type="submit"  >
     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
-    <button class="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"  id="upload-button" onclick="uploadFile()" name="submit">Upload File</button>
+    <button class="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"  id="upload-button"  name="submit">Upload File</button>
     
 </form>
-
-
-<?php
-  $output=null;
-  $retval=null;
-  exec('python /var/www/html/photo/sponsors_photos.py', $output, $retval);
-  echo "Your cool script returned the status $retval and output:\n";
-  print_r($output);
-?>
 
 
 </body>
