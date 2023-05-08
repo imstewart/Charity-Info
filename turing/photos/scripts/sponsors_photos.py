@@ -8,7 +8,7 @@ import os
 
 import datetime
 
-os.chdir('/var/www/html/photo')
+os.chdir('/var/www/html/photos')
 
 current_datetime=datetime.datetime.now()
 today = current_datetime.strftime("%d-%m-%Y")
