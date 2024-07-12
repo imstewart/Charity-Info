@@ -1,0 +1,98 @@
+{
+	"clientID": "65c20960-3237-11ef-9eac-bbaf75959fdd",
+	"packetQueue": [
+		{
+			"attempts": 0,
+			"packet": {
+				"clientID": "65c20960-3237-11ef-9eac-bbaf75959fdd",
+				"id": "bb0adf78-81f5-44de-9688-7dad542f50e0",
+				"name": "app::open",
+				"platform": "win32 10.0.22631, Electron 15.3.1, Store=false",
+				"timestamp": 1719239898379,
+				"userTimezone": -60,
+				"version": "3.29.1",
+				"projectName": "scratch-desktop 3.29.1",
+				"language": "",
+				"metadata": {
+					"scriptCount": -1,
+					"spriteCount": -1,
+					"variablesCount": -1,
+					"blocksCount": -1,
+					"costumesCount": -1,
+					"listsCount": -1,
+					"soundsCount": -1
+				}
+			}
+		},
+		{
+			"attempts": 0,
+			"packet": {
+				"clientID": "65c20960-3237-11ef-9eac-bbaf75959fdd",
+				"id": "a24e3825-9098-4a7d-bff1-a655d132551f",
+				"name": "project::create",
+				"platform": "win32 10.0.22631, Electron 15.3.1, Store=false",
+				"timestamp": 1719239905031,
+				"userTimezone": -60,
+				"projectName": "Scratch Project",
+				"language": "en",
+				"metadata": {
+					"spriteCount": 2,
+					"blocksCount": 0,
+					"costumesCount": 3,
+					"listsCount": 0,
+					"scriptCount": 0,
+					"soundsCount": 2,
+					"variablesCount": 1
+				},
+				"version": "3.29.1"
+			}
+		},
+		{
+			"attempts": 0,
+			"packet": {
+				"clientID": "65c20960-3237-11ef-9eac-bbaf75959fdd",
+				"id": "1595f58e-ec69-4faa-9b8e-4c6aa1e5eced",
+				"name": "project::load",
+				"platform": "win32 10.0.22631, Electron 15.3.1, Store=false",
+				"timestamp": 1719239905039,
+				"userTimezone": -60,
+				"projectName": "Scratch Project",
+				"language": "en",
+				"metadata": {
+					"spriteCount": 2,
+					"blocksCount": 0,
+					"costumesCount": 3,
+					"listsCount": 0,
+					"scriptCount": 0,
+					"soundsCount": 2,
+					"variablesCount": 1
+				},
+				"version": "3.29.1"
+			}
+		},
+		{
+			"attempts": 0,
+			"packet": {
+				"clientID": "65c20960-3237-11ef-9eac-bbaf75959fdd",
+				"id": "162f1178-2893-41f8-aa95-22066748a2d4",
+				"name": "app::close",
+				"platform": "win32 10.0.22631, Electron 15.3.1, Store=false",
+				"timestamp": 1719239908812,
+				"userTimezone": -60,
+				"version": "3.29.1",
+				"projectName": "scratch-desktop 3.29.1",
+				"language": "",
+				"metadata": {
+					"scriptCount": -1,
+					"spriteCount": -1,
+					"variablesCount": -1,
+					"blocksCount": -1,
+					"costumesCount": -1,
+					"listsCount": -1,
+					"soundsCount": -1
+				}
+			}
+		}
+	],
+	"optIn": false
+}
