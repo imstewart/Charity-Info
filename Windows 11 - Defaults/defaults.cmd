@@ -1,3 +1,10 @@
+@echo off 
+echo Deploy default setting for truring TTPro Build
+rem 
+rem   Initial Deploy of settings
+rem   Date 7/12/2024 - Ian Stewart
+rem  
+
 reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f
 reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"
 rem reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Runonce" /v "UninstallCopilot" /t REG_SZ /d 'powershell.exe -NoProfile -Command \"Get-AppxPackage -Name 'Microsoft.Windows.Ai.Copilot.Provider' | Remove-AppxPackage;\"" /f
