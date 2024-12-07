@@ -1,7 +1,3 @@
-@echo off 
-cls 
-echo Deploying Standards Settings to ensure that all defaults are set
-
 reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f
 reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"
 rem reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Runonce" /v "UninstallCopilot" /t REG_SZ /d 'powershell.exe -NoProfile -Command \"Get-AppxPackage -Name 'Microsoft.Windows.Ai.Copilot.Provider' | Remove-AppxPackage;\"" /f
@@ -70,11 +66,14 @@ reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\EdgeUpdate /v UpdateDefau
 reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\EdgeUpdate /v InstallDefault /t REG_DWORD /d 1 /f
 reg add HKLM\software\microsoft\windows\currentversion\policies\system /v EnableFirstLogonAnimation /t REG_DWORD /d 0 /f
 reg add HKLM\software\microsoft\windows\currentversion\CONTROL\NETWORK\NewNetworkWindowsOff /F
-reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP /v LockScreenImagePath /d C:\turing\Background.jpg /F
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP /v LockScreenImagePath /d C:\turing\TTProBackground.jpg /F
+REG ADD "HKEY_USERS\.DEFAULT\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers" /v BackgroundHistoryPath0 /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
 
 reg.exe add HKCU\software\microsoft\windows\currentversion\explorer\advanced /v TaskbarAl /t REG_DWORD /d 0 /f
 reg.exe add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search /v SearchboxTaskbarMode /t REG_DWORD /d 1 /f
 reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v HideFileExt /t REG_DWORD /d 0 /f
+reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v ShowTaskViewButton /t REG_DWORD /d 0 /f
 reg.exe add HKLM\Software\Policies\Google\Chrome\PromotionalTabsEnabled /t REG_DWORD /d 0 /f
 
 Echo Set Default Start Menu
