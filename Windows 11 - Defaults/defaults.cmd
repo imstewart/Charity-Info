@@ -1,4 +1,5 @@
 @echo off 
+cls
 echo Deploy default setting for truring TTPro Build
 rem 
 rem   Initial Deploy of settings
@@ -74,8 +75,11 @@ reg add HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\EdgeUpdate /v InstallDefa
 reg add HKLM\software\microsoft\windows\currentversion\policies\system /v EnableFirstLogonAnimation /t REG_DWORD /d 0 /f
 reg add HKLM\software\microsoft\windows\currentversion\CONTROL\NETWORK\NewNetworkWindowsOff /F
 reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP /v LockScreenImagePath /d C:\turing\TTProBackground.jpg /F
-REG ADD "HKEY_USERS\.DEFAULT\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
-REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers" /v BackgroundHistoryPath0 /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
+REG ADD "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
+Reg add 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP' /v StatusValue /t REG_SZ /d 1 /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers" /v BackgroundHistoryPath0 /t REG_SZ /d "C:\turing\TTProBackground.jpg" /f
+Reg add 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP' /v DesktopImageStatus /t REG_DWORD /D 1 /f
+
 
 reg.exe add HKCU\software\microsoft\windows\currentversion\explorer\advanced /v TaskbarAl /t REG_DWORD /d 0 /f
 reg.exe add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search /v SearchboxTaskbarMode /t REG_DWORD /d 1 /f
@@ -105,4 +109,6 @@ winget uninstall OneDriveSetup.exe   --accept-source-agreements
 
 del "C:\Users\user1\Desktop\Microsoft Edge.lnk" /f
 pause
+
+
 
