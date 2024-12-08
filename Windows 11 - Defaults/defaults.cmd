@@ -97,15 +97,18 @@ dism /online /Import-DefaultAppAssociations:"C:\TURING\Settings\Assocations\Defa
 Echo Set background Wallpaper
 C:\Turing\software\Bginfo64.exe c:\turing\software\turing.bgi /timer:0 /nolicprompt /silent 
 
-Set Application Defaults
-xcopy "C:\TURING\Settings\RapidTyping 5\*" "C:\ProgramData\RapidTyping 5\*" /s /e /y > null
-xcopy "C:\TURING\Settings\Scratch\*" "C:\Users\User1\AppData\Roaming\Scratch\*" /s /e /y > null
-xcopy "C:\TURING\Settings\vlc\*" "C:\Users\User1\AppData\Roaming\vlc\*" /s /e /y > null 
+Echo Hide MeetNow Icon
+reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer /v HideSCAMeetnow /t REG_DWORD /d 1 /f
+
+ull
+ > null
+
 pause
 powershell.exe -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;" 
 powershell.exe -NoProfile -Command "Get-Content -LiteralPath '.\remove-packages.ps1' -Raw | Invoke-Expression;" 
 
-winget uninstall OneDriveSetup.exe   --accept-source-agreements
+TASKKILL /f /im OneDrive.exe
+%systemroot%\SysWOW64\OneDriveSetup.exe /uninstall
 
 del "C:\Users\user1\Desktop\Microsoft Edge.lnk" /f
 pause

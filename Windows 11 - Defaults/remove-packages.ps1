@@ -33,6 +33,7 @@ $selectors = @(
 	'Microsoft.GamingApp';
 	'Microsoft.YourPhone';
     'Microsoft.Todos';
+	'Microsoft.MixedReality.Portal';
     '*copilot*';
 );
 $getCommand = { Get-AppxProvisionedPackage -Online; };
