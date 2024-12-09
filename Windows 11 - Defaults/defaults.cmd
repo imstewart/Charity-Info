@@ -100,9 +100,6 @@ C:\Turing\software\Bginfo64.exe c:\turing\software\turing.bgi /timer:0 /nolicpro
 Echo Hide MeetNow Icon
 reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer /v HideSCAMeetnow /t REG_DWORD /d 1 /f
 
-ull
- > null
-
 pause
 powershell.exe -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;" 
 powershell.exe -NoProfile -Command "Get-Content -LiteralPath '.\remove-packages.ps1' -Raw | Invoke-Expression;" 

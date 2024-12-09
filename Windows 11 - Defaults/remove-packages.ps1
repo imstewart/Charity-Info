@@ -34,7 +34,7 @@ $selectors = @(
 	'Microsoft.YourPhone';
     'Microsoft.Todos';
 	'Microsoft.MixedReality.Portal';
-    '*copilot*';
+    'Microsoft.Copilot';
 );
 $getCommand = { Get-AppxProvisionedPackage -Online; };
 $filterCommand = { $_.DisplayName -eq $selector; };
